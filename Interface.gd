@@ -37,11 +37,16 @@ class ch_sorting:
 func _ready():
 	grid = $Grid
 	
-#	var c_sort = ch_sorting.new()
-#	var v = read_file(9000000)
-#	v.sort_custom(c_sort,"xy_sort")
-#
-#	grid.exec_quick_hull(v)
+
+
+func compute_file():
+	var c_sort = ch_sorting.new()
+	print("\t\t\t***Reading***\n")
+	var v = read_file(9000000)
+	print("\t\t\t***Sorting***\n")
+	v.sort_custom(c_sort,"xy_sort")
+
+	grid.compute_hull(v,false)
 
 func _input(event):
 	if event is InputEventMouseButton and event.is_action_pressed("mouse_left"):
@@ -75,33 +80,11 @@ func _draw():
 		for i in range(len(draw_ch_queue) ):
 		  draw_line(draw_ch_queue[i], draw_ch_queue[(i + 1) % (len(draw_ch_queue))],Color.black,line_width,true)
 	  
-func fast_test(var arr:Array):
+func add_step(var arr:Array):
 	t_vec.append(arr)
 
 
-func _on_QuickHullButton_pressed():
-	t_vec.clear();
-	l=-1
-	
-	var c_sort = ch_sorting.new()
-	draw_circles_queue.sort_custom(c_sort,"xy_sort")
-	
-	var result = grid.exec_quick_hull(draw_circles_queue)
 
-	var non_duplicate = []
-	for i in range(len(result)):
-		if !result[i] in non_duplicate:
-			non_duplicate.append(result[i])
-
-	draw_ch_queue = non_duplicate	
-	
-	c_sort.get_lowest(draw_ch_queue)
-	draw_ch_queue.erase(c_sort.lowest)
-	draw_ch_queue.sort_custom(c_sort,"odet_sort")
-	draw_ch_queue.push_front(c_sort.lowest)		
-	draw_ch = true
-	update()
-			
 			
 func read_file(max_points = INF):
 	var points = []
@@ -123,5 +106,26 @@ func read_file(max_points = INF):
 		
 
 
-func _on_Grid_test(node, v):
-	fast_test(v)
+func _on_Compute_pressed():
+	t_vec.clear();
+	l=-1
+	
+	var c_sort = ch_sorting.new()
+	print("\t\t\t***xySorting***\n")
+	draw_circles_queue.sort_custom(c_sort,"xy_sort")
+	
+	var result = grid.compute_hull(draw_circles_queue,true)
+
+	var non_duplicate = []
+	for i in range(len(result)):
+		if !result[i] in non_duplicate:
+			non_duplicate.append(result[i])
+
+	draw_ch_queue = non_duplicate	
+	
+	c_sort.get_lowest(draw_ch_queue)
+	draw_ch_queue.erase(c_sort.lowest)
+	draw_ch_queue.sort_custom(c_sort,"odet_sort")
+	draw_ch_queue.push_front(c_sort.lowest)		
+	draw_ch = true
+	update()

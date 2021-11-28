@@ -23,6 +23,7 @@ _global_script_class_icons={
 config/name="GPUConvexHull"
 run/main_scene="res://Interface.tscn"
 config/icon="res://icon.PNG"
+config/windows_native_icon="res://icon_wP9_1.ico"
 
 [display]
 
