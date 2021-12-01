@@ -42,11 +42,27 @@ func _ready():
 func compute_file():
 	var c_sort = ch_sorting.new()
 	print("\t\t\t***Reading***\n")
+#	var v = read_file($Amount.get_value())
 	var v = read_file(9000000)
 	print("\t\t\t***Sorting***\n")
 	v.sort_custom(c_sort,"xy_sort")
 
-	grid.compute_hull(v,false)
+	for d_size in range(160,161,160):
+		grid.compute_hull(v.slice(0,0),d_size,false)
+		grid.compute_hull(v.slice(0,9),d_size,false)
+		grid.compute_hull(v.slice(0,99),d_size,false)
+		grid.compute_hull(v.slice(0,999),d_size,false)
+		grid.compute_hull(v.slice(0,9999),d_size,false)
+		grid.compute_hull(v.slice(0,99999),d_size,false)
+		grid.compute_hull(v.slice(0,999999),d_size,false)
+		grid.compute_hull(v.slice(0,1999999),d_size,false)
+		grid.compute_hull(v.slice(0,2999999),d_size,false)
+		grid.compute_hull(v.slice(0,3999999),d_size,false)
+		grid.compute_hull(v.slice(0,4999999),d_size,false)
+		grid.compute_hull(v.slice(0,5999999),d_size,false)
+		grid.compute_hull(v.slice(0,6999999),d_size,false)
+		grid.compute_hull(v.slice(0,7999999),d_size,false)
+		grid.compute_hull(v.slice(0,8999999),d_size,false)
 
 func _input(event):
 	if event is InputEventMouseButton and event.is_action_pressed("mouse_left"):
