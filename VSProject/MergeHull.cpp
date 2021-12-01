@@ -218,7 +218,6 @@ void MergeHull::jm_gpua(float* points_x, float* points_y, int size, int d_size, 
     queue.enqueueWriteBuffer(buffer_SIZE, CL_TRUE, 0, sizeof(int), &size);
     queue.enqueueWriteBuffer(buffer_D_SIZE, CL_TRUE, 0, sizeof(int), &d_size);
 
-    // Set the kernel arguments
     kernel.setArg(0, buffer_POINTS_X);
     kernel.setArg(1, buffer_POINTS_Y);
     kernel.setArg(2, buffer_SIZE);
@@ -230,7 +229,7 @@ void MergeHull::jm_gpua(float* points_x, float* points_y, int size, int d_size, 
         kernel,
         cl::NullRange,
         cl::NDRange(ndrange_size),
-        cl::NDRange(ndrange_group_size), //should be computed according to the points size
+        cl::NDRange(ndrange_group_size),
         NULL,
         &event);
 
@@ -240,9 +239,9 @@ void MergeHull::jm_gpua(float* points_x, float* points_y, int size, int d_size, 
  
 }
 
-std::vector<Point> MergeHull::bottom_up(float* points_x, float* points_y, int size, godot::Node* node)
+std::vector<Point> MergeHull::bottom_up(float* points_x, float* points_y, int size, int _d_size)
 {
-    float d_size = 5.0;
+    float d_size = _d_size;
     if (size <= d_size)
     {
         return jm(points_x, points_y, size);
@@ -285,7 +284,7 @@ std::vector<Point> MergeHull::bottom_up(float* points_x, float* points_y, int si
                     left_hull.push_back(global_ch[j + ((i - 1) * v_size)]);
             }
 
-            for (int i = ceil(mid / d_size) + 1; i < ceil((hi + 1) / 5.0) + 1; i++)
+            for (int i = ceil(mid / d_size) + 1; i < ceil((hi + 1) / d_size) + 1; i++)
             {
                 for (int j = 0; j < global_ch[(i * v_size) - 1].x; j++)
                     right_hull.push_back(global_ch[j + ((i - 1) * v_size)]);
@@ -361,7 +360,7 @@ std::vector<Point> MergeHull::bottom_up_with_step(float* points_x, float* points
                     left_hull.push_back(global_ch[j + ((i - 1) * v_size)]);
             }
 
-            for (int i = ceil(mid / d_size) + 1; i < ceil((hi + 1) / 5.0) + 1; i++)
+            for (int i = ceil(mid / d_size) + 1; i < ceil((hi + 1) / d_size) + 1; i++)
             {
                 for (int j = 0; j < global_ch[(i * v_size) - 1].x; j++)
                     right_hull.push_back(global_ch[j + ((i - 1) * v_size)]);
@@ -415,9 +414,9 @@ std::vector<Point> MergeHull::bottom_up_with_step(float* points_x, float* points
     return result;
 }
 
-std::vector<Point> MergeHull::bottom_up_gpua(float* points_x, float* points_y, int size)
+std::vector<Point> MergeHull::bottom_up_gpua(float* points_x, float* points_y, int size, int _d_size)
 {
-    float d_size = 5.0;
+    float d_size = _d_size;
     if (size <= d_size)
     {
         return jm(points_x, points_y, size);
@@ -453,7 +452,7 @@ std::vector<Point> MergeHull::bottom_up_gpua(float* points_x, float* points_y, i
                     left_hull.push_back(Point(global_ch_x[j + ((i - 1) * v_size)], global_ch_y[j + ((i - 1) * v_size)]));
             }
 
-            for (int i = ceil(mid / d_size) + 1; i < ceil((hi + 1) / 5.0) + 1; i++)
+            for (int i = ceil(mid / d_size) + 1; i < ceil((hi + 1) / d_size) + 1; i++)
             {
                 for (int j = 0; j < global_ch_x[(i * v_size) - 1]; j++)
                     right_hull.push_back(Point(global_ch_x[j + ((i - 1) * v_size)], global_ch_y[j + ((i - 1) * v_size)]));

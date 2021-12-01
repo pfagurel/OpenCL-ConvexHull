@@ -47,8 +47,6 @@ class MergeHull
 
     std::vector<Point> merger(std::vector<Point >& a, std::vector<Point>& b);
 
-	void merger_inplace(std::vector<Point >& a, std::vector<Point>& b, float* global_ch_x, float* global_ch_y, int g_lo_a, int g_hi_a, int g_lo_b, int g_hi_b, int d_size);
-
     std::vector<Point> jm(float* points_x, float* points_y, int size);
 
     void jm(float* points_x, float* points_y, int lo, int hi, int g_lo, int g_hi, std::vector<Point>& global_ch);
@@ -60,10 +58,10 @@ public:
 
     std::vector<Point> divide(float* points_x, float* points_y, int size);
 
-    std::vector<Point> bottom_up(float* points_x, float* points_y, int size, godot::Node* node);
+    std::vector<Point> bottom_up(float* points_x, float* points_y, int size, int d_size);
 
 	std::vector<Point> bottom_up_with_step(float* points_x, float* points_y, int size, godot::Node* node);
 
-	std::vector<Point> bottom_up_gpua(float* points_x, float* points_y, int size);
+	std::vector<Point> bottom_up_gpua(float* points_x, float* points_y, int size, int d_size);
 };
 

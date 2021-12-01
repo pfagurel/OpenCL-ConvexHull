@@ -20,10 +20,17 @@ void ConvexHullCPP::_init() {
 }
 
 
-Array ConvexHullCPP::compute_hull(Array points, godot_bool step)
+Array ConvexHullCPP::compute_hull(Array points, godot_int d_size, godot_bool step)
 {
+    std::string filename("log.txt");
+    std::ofstream file_out;
+
+    file_out.open(filename, std::ios_base::app);
+   
+
     std::chrono::steady_clock::time_point begin;
     std::chrono::steady_clock::time_point end;
+
 
     Point* vec_points = new Point[points.size()];
     float* points_x = new float[points.size()];
@@ -45,6 +52,7 @@ Array ConvexHullCPP::compute_hull(Array points, godot_bool step)
     end = std::chrono::steady_clock::now();
     std::cout << "Execution time = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[micros]" << std::endl;
     std::cout << "Execution time = " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
+    file_out << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << std::endl;
 
     std::cout << "\t\t\t***CPU MergeHull BottomUp***\n";
     begin = std::chrono::steady_clock::now();
@@ -54,20 +62,22 @@ Array ConvexHullCPP::compute_hull(Array points, godot_bool step)
     }
     else
     {
-        merge_hull_result = merge_hull.bottom_up(points_x, points_y, points.size(), this);
+        merge_hull_result = merge_hull.bottom_up(points_x, points_y, points.size(), d_size);
     }
     end = std::chrono::steady_clock::now();
     std::cout << "Execution time = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[micros]" << std::endl;
     std::cout << "Execution time = " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
+    file_out << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << std::endl;
 
     std::cout << "\t\t\t***GPUA MergeHull***\n";
     merge_hull.init();
     begin = std::chrono::steady_clock::now();
-    merge_hull_result = merge_hull.bottom_up_gpua(points_x, points_y, points.size());
+    merge_hull_result = merge_hull.bottom_up_gpua(points_x, points_y, points.size(), d_size);
     end = std::chrono::steady_clock::now();
     std::cout << "Execution time = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[micros]" << std::endl;
     std::cout << "Execution time = " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
-
+    file_out << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << std::endl;
+    
     std::cout << "\t\t\t***CPU QuickHull***\n";
     QuickHullCPU quick_hull_cpu;
     begin = std::chrono::steady_clock::now();
@@ -75,6 +85,7 @@ Array ConvexHullCPP::compute_hull(Array points, godot_bool step)
     end = std::chrono::steady_clock::now();
     std::cout << "Execution time = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[micros]" << std::endl;
     std::cout << "Execution time = " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
+    file_out << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << std::endl;
 
     std::cout << "\t\t\t***GPUA QuickHull***\n";
     begin = std::chrono::steady_clock::now();
@@ -82,6 +93,7 @@ Array ConvexHullCPP::compute_hull(Array points, godot_bool step)
     end = std::chrono::steady_clock::now();
     std::cout << "Execution time = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[micros]" << std::endl;
     std::cout << "Execution time = " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
+    file_out << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count()  << std::endl << "=========================================" << std::endl;
 
     
 
@@ -94,6 +106,8 @@ Array ConvexHullCPP::compute_hull(Array points, godot_bool step)
     delete[] vec_points;
     delete[] points_x;
     delete[] points_y;
+
+    file_out.close();
 
     return result_array;
 }

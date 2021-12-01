@@ -67,11 +67,8 @@ public:
 
 	std::vector<Point> quick_hull(float* points_x, float* points_y, int size);
 
-	~QuickHullGPU()
-	{
-		delete[] result_index;
-		delete[] result_distance;
-	}
+	~QuickHullGPU();
+	
 };
 
 

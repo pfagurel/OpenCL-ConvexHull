@@ -61,6 +61,13 @@ void QuickHullGPU::init()
 	max_work_group_size = devices[0].getInfo<CL_DEVICE_MAX_WORK_GROUP_SIZE>();
 }
 
+QuickHullGPU::~QuickHullGPU()
+{
+	delete[] result_index;
+	delete[] result_distance;
+
+}
+
 void QuickHullGPU::test()
 {
 	print_platform_vendors(platforms);
@@ -129,6 +136,8 @@ std::vector<Point> QuickHullGPU::quick_hull(float* points_x, float* points_y, in
 
 	return result;
 }
+
+
 
 void QuickHullGPU::find_hull(float* points_x, float* points_y, int size, float* p1, float* p2, int _side, std::vector<Point> &result )
 {

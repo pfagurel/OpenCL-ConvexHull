@@ -9,6 +9,7 @@
 #include "QuickHullGPU.h"
 #include "MergeHull.h"
 #include <chrono>
+#include <fstream>
 
 namespace godot {
 
@@ -26,7 +27,7 @@ namespace godot {
 
 		void _init(); // our initializer called by Godot
 
-		Array compute_hull(Array points, godot_bool step);
+		Array compute_hull(Array points, godot_int d_size, godot_bool step);
 	};
 
 } // namespace godot
