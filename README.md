@@ -9,7 +9,7 @@ Interface contains the implementation of a graphical application which allows to
 
 ## Building for Windows
 
-The aplication was built using Godotengine https://godotengine.org/ with GDNative and C++ OpenCL.
+The aplication was built using Godotengine 3.3.4 https://godotengine.org/ with GDNative and C++ OpenCL.
 
 A guide on how to configure GDNative can be found here: https://docs.godotengine.org/en/stable/tutorials/plugins/gdnative/gdnative-cpp-example.html.
 
