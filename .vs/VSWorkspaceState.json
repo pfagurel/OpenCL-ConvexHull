@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\GPU\\QuickHullGPU",
+    "\\GPU\\QuickHullGPU\\OpenCL",
+    "\\GPU\\QuickHullGPU\\OpenCL\\include",
+    "\\GPU\\QuickHullGPU\\OpenCL\\include\\CL",
+    "\\GPU\\QuickHullGPU\\QuickHullGPU"
+  ],
+  "SelectedNode": "\\GPU",
+  "PreviewInSolutionExplorer": false
+}
