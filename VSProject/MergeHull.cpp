@@ -229,7 +229,7 @@ void MergeHull::jm_gpua(float* points_x, float* points_y, int size, int d_size, 
         kernel,
         cl::NullRange,
         cl::NDRange(ndrange_size),
-        cl::NDRange(ndrange_group_size),
+        cl::NDRange(1),
         NULL,
         &event);
 

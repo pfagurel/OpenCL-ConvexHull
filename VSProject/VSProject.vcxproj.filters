@@ -30,9 +30,6 @@
     <ClCompile Include="QuickHullGPU.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="RQHullCPU.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="MergeHull.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -48,9 +45,6 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="QuickHullGPU.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="RQHullCPU.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="MergeHull.h">

@@ -1,5 +1,42 @@
 #include "convex_hull.h"
 
+//https://www.geeksforgeeks.org/cpp-program-for-quicksort/
+
+void swap(godot::Array& arr, int i, int j)
+{
+    godot::Variant t = arr[i];
+    arr[i] = arr[j];
+    arr[j] = t;
+}
+
+
+int partition(godot::Array& arr, int low, int high)
+{
+    godot::Vector2 pivot = arr[high];
+    int i = (low - 1); 
+
+    for (int j = low; j <= high - 1; j++)
+    {
+        if (((godot::Vector2) arr[j]).x < pivot.x || (((godot::Vector2)arr[j]).x == pivot.x && ((godot::Vector2)arr[j]).y < pivot.y))
+        {
+            i++;  
+            swap(arr, i, j);
+        }
+    }
+    swap(arr,i + 1, high);
+    return (i + 1);
+}
+
+
+void quickSort(godot::Array& arr, int low, int high)
+{
+    if (low < high)
+    {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
 
 using namespace godot;
 
@@ -27,6 +64,7 @@ Array ConvexHullCPP::compute_hull(Array points, godot_int d_size, godot_bool ste
 
     file_out.open(filename, std::ios_base::app);
    
+    quickSort(points, 0, points.size()-1);
 
     std::chrono::steady_clock::time_point begin;
     std::chrono::steady_clock::time_point end;
@@ -77,7 +115,7 @@ Array ConvexHullCPP::compute_hull(Array points, godot_int d_size, godot_bool ste
     std::cout << "Execution time = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[micros]" << std::endl;
     std::cout << "Execution time = " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
     file_out << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << std::endl;
-    
+
     std::cout << "\t\t\t***CPU QuickHull***\n";
     QuickHullCPU quick_hull_cpu;
     begin = std::chrono::steady_clock::now();

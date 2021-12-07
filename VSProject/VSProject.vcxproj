@@ -25,7 +25,6 @@
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="QuickHullCPU.cpp" />
     <ClCompile Include="QuickHullGPU.cpp" />
-    <ClCompile Include="RQHullCPU.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MergeHull.h" />
@@ -33,7 +32,6 @@
     <ClInclude Include="convex_hull.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="QuickHullCPU.h" />
-    <ClInclude Include="RQHullCPU.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -111,6 +109,7 @@
     <OutDir>..\..\..\Interface\bin\win64\</OutDir>
     <IncludePath>G:\VisualStudioProjects\Infof420\godot-cpp\godot-headers;G:\VisualStudioProjects\Infof420\godot-cpp\include\gen;G:\VisualStudioProjects\Infof420\godot-cpp\include\core;G:\VisualStudioProjects\Infof420\godot-cpp\include;$(IncludePath)</IncludePath>
     <LibraryPath>G:\VisualStudioProjects\Infof420\godot-cpp\bin;$(LibraryPath)</LibraryPath>
+    <TargetName>libconvexhull</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -165,13 +164,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>G:\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>G:\VisualStudioProjects\Infof420\godot-cpp\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>G:\VisualStudioProjects\Infof420\godot-cpp\bin;G:\vcpkg\installed\x64-windows\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libgodot-cpp.windows.release.64.lib;OpenCL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
