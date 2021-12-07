@@ -32,37 +32,38 @@ class ch_sorting:
 	
 	func xy_sort(a,b):
 		return a.x < b.x or ((a.x == b.x) and a.y < b.y)
+		
 
 
 func _ready():
 	grid = $Grid
 	
 
-
 func compute_file():
 	var c_sort = ch_sorting.new()
 	print("\t\t\t***Reading***\n")
-#	var v = read_file($Amount.get_value())
-	var v = read_file(9000000)
+	var v = read_file($Amount.get_value())
+#	var v = read_file(9000000)
 	print("\t\t\t***Sorting***\n")
-	v.sort_custom(c_sort,"xy_sort")
-
-	for d_size in range(160,161,160):
-		grid.compute_hull(v.slice(0,0),d_size,false)
-		grid.compute_hull(v.slice(0,9),d_size,false)
-		grid.compute_hull(v.slice(0,99),d_size,false)
-		grid.compute_hull(v.slice(0,999),d_size,false)
-		grid.compute_hull(v.slice(0,9999),d_size,false)
-		grid.compute_hull(v.slice(0,99999),d_size,false)
-		grid.compute_hull(v.slice(0,999999),d_size,false)
-		grid.compute_hull(v.slice(0,1999999),d_size,false)
-		grid.compute_hull(v.slice(0,2999999),d_size,false)
-		grid.compute_hull(v.slice(0,3999999),d_size,false)
-		grid.compute_hull(v.slice(0,4999999),d_size,false)
-		grid.compute_hull(v.slice(0,5999999),d_size,false)
-		grid.compute_hull(v.slice(0,6999999),d_size,false)
-		grid.compute_hull(v.slice(0,7999999),d_size,false)
-		grid.compute_hull(v.slice(0,8999999),d_size,false)
+	#v.sort_custom(c_sort,"xy_sort")
+	grid.compute_hull(v,160,false)
+	
+#	for d_size in range(160,161,160):
+#		grid.compute_hull(v.slice(0,0),d_size,false)
+#		grid.compute_hull(v.slice(0,9),d_size,false)
+#		grid.compute_hull(v.slice(0,99),d_size,false)
+#		grid.compute_hull(v.slice(0,999),d_size,false)
+#		grid.compute_hull(v.slice(0,9999),d_size,false)
+#		grid.compute_hull(v.slice(0,99999),d_size,false)
+#		grid.compute_hull(v.slice(0,999999),d_size,false)
+#		grid.compute_hull(v.slice(0,1999999),d_size,false)
+#		grid.compute_hull(v.slice(0,2999999),d_size,false)
+#		grid.compute_hull(v.slice(0,3999999),d_size,false)
+#		grid.compute_hull(v.slice(0,4999999),d_size,false)
+#		grid.compute_hull(v.slice(0,5999999),d_size,false)
+#		grid.compute_hull(v.slice(0,6999999),d_size,false)
+#		grid.compute_hull(v.slice(0,7999999),d_size,false)
+#		grid.compute_hull(v.slice(0,8999999),d_size,false)
 
 func _input(event):
 	if event is InputEventMouseButton and event.is_action_pressed("mouse_left"):
@@ -128,9 +129,10 @@ func _on_Compute_pressed():
 	
 	var c_sort = ch_sorting.new()
 	print("\t\t\t***xySorting***\n")
-	draw_circles_queue.sort_custom(c_sort,"xy_sort")
 	
-	var result = grid.compute_hull(draw_circles_queue,true)
+	#draw_circles_queue.sort_custom(c_sort,"xy_sort")
+	
+	var result = grid.compute_hull(draw_circles_queue, 5, true)
 
 	var non_duplicate = []
 	for i in range(len(result)):
