@@ -8,6 +8,12 @@ int side(Point a, Point b, Point c)
     return 0;
 }
 
+float odet(Point a, Point b, Point c) 
+{
+    // Orientaion determinant
+    return a.x * (b.y - c.y) - b.x * (a.y - c.y) + c.x * (a.y - b.y);
+}
+
 void MergeHull::upper_bottom_points(int m, std::vector<Point>& V, int n, std::vector<Point>& W, int* t1, int* t2, int* t3, int* t4)
 {
     int r1 = 0;
@@ -59,8 +65,7 @@ void MergeHull::upper_bottom_points(int m, std::vector<Point>& V, int n, std::ve
 }
 // Merge the two polygons 'a' and 'b'
 // represented as two vectors.
-std::vector<Point> MergeHull::merger(std::vector<Point >& a,
-    std::vector<Point>& b)
+std::vector<Point> MergeHull::merger(std::vector<Point >& a, std::vector<Point>& b)
 {
     int n1 = a.size();
     int n2 = b.size();
@@ -100,6 +105,140 @@ std::vector<Point> MergeHull::merger(std::vector<Point >& a,
     return ret;
 }
 
+void inline MergeHull::push_next_inc(std::vector<Point>&  vec, std::vector<Point>& ch1, std::vector<Point>& ch2, int& i1_l, int& i1_u, int& i2_l, int& i2_u ) {
+    if (i1_u < i1_l) {
+        if (i2_u < i2_l) {
+            return;
+        }
+
+        if (ch2[i2_l].x <= ch2[i2_u].x) {
+            vec.push_back(ch2[i2_l]);
+            ++i2_l;
+        }
+        else {
+            vec.push_back(ch2[i2_u]);
+            --i2_u;
+        }
+
+        return;
+    }
+    else if (i2_u < i2_l) {
+        if (ch1[i1_l].x <= ch1[i1_u].x) {
+            vec.push_back(ch1[i1_l]);
+            ++i1_l;
+        }
+        else {
+            vec.push_back(ch1[i1_u]);
+            --i1_u;
+        }
+
+        return;
+    }
+
+    if (ch1[i1_l].x <= ch1[i1_u].x) {
+        if (ch2[i2_l].x <= ch2[i2_u].x) {
+            if (ch1[i1_l].x <= ch2[i2_l].x) {
+                vec.push_back(ch1[i1_l]);
+                ++i1_l;
+            }
+            else {
+                vec.push_back(ch2[i2_l]);
+                ++i2_l;
+            }
+        }
+        else {
+            if (ch1[i1_l].x <= ch2[i2_u].x) {
+                vec.push_back(ch1[i1_l]);
+                ++i1_l;
+            }
+            else {
+                vec.push_back(ch2[i2_u]);
+                --i2_u;
+            }
+        }
+    }
+    else {
+        if (ch2[i2_l].x <= ch2[i2_u].x) {
+            if (ch1[i1_u].x <= ch2[i2_l].x) {
+                vec.push_back(ch1[i1_u]);
+                --i1_u;
+            }
+            else {
+                vec.push_back(ch2[i2_l]);
+                ++i2_l;
+            }
+        }
+        else {
+            if (ch1[i1_u].x <= ch2[i2_u].x) {
+                vec.push_back(ch1[i1_u]);
+                --i1_u;
+            }
+            else {
+                vec.push_back(ch2[i2_u]);
+                --i2_u;
+            }
+        }
+    }
+}
+
+std::vector<Point> MergeHull::graham_merger(std::vector<Point>& ch1, std::vector<Point>& ch2)
+{
+    std::vector<Point> upper;
+    std::vector<Point> lower;
+
+    int i1_l = 0;
+    int i2_l = 0;
+    int i1_u = ch1.size()-1;   
+    int i2_u = ch2.size()-1;
+
+    push_next_inc(upper, ch1, ch2, i1_l, i1_u, i2_l, i2_u);
+    push_next_inc(upper, ch1, ch2, i1_l, i1_u, i2_l, i2_u);
+
+    for (int i = 2; i < ch1.size()+ch2.size(); i++) {
+        push_next_inc(upper, ch1, ch2, i1_l, i1_u, i2_l, i2_u);
+
+        while (
+            upper.size() > 2 &&
+            odet(
+                upper[upper.size() - 3],
+                upper[upper.size() - 2],
+                upper[upper.size() - 1]
+            ) >= 0
+            ) {
+            upper[upper.size() - 2] = upper.back();
+            upper.pop_back();
+        }
+    }
+
+    i1_l = 0;
+    i2_l = 0;
+    i1_u = ch1.size() - 1;
+    i2_u = ch2.size() - 1;
+
+    push_next_inc(lower, ch1, ch2, i1_l, i1_u, i2_l, i2_u);
+    push_next_inc(lower, ch1, ch2, i1_l, i1_u, i2_l, i2_u);
+
+    for (int i = ch1.size() + ch2.size() - 3; i > -1; i--) {
+        push_next_inc(lower, ch1, ch2, i1_l, i1_u, i2_l, i2_u);
+        while (
+            lower.size() > 2 &&
+            odet(
+                lower[lower.size() - 3],
+                lower[lower.size() - 2],
+                lower[lower.size() - 1]
+            ) <= 0
+            ) {
+            lower[lower.size() - 2] = lower.back();
+            lower.pop_back();
+        }
+    }
+    for (int i = upper.size() - 2; i > 0; i--)
+    {
+        lower.push_back(upper[i]);
+    }
+    return lower;
+
+}
 
 // Returns the convex hull for the given set of points
 std::vector<Point> MergeHull::divide(float* points_x, float* points_y, int size)
@@ -206,6 +345,7 @@ void MergeHull::jm_gpua(float* points_x, float* points_y, int size, int d_size, 
     if (ndrange_group_size < ndrange_size)
     ndrange_size += ndrange_group_size - (ndrange_size % ndrange_group_size);
 
+
     buffer_POINTS_X = cl::Buffer(context, CL_MEM_READ_ONLY, size * sizeof(float));
     buffer_POINTS_Y = cl::Buffer(context, CL_MEM_READ_ONLY, size * sizeof(float));
     buffer_SIZE = cl::Buffer(context, CL_MEM_READ_ONLY, sizeof(int));
@@ -214,6 +354,7 @@ void MergeHull::jm_gpua(float* points_x, float* points_y, int size, int d_size, 
     buffer_GLOBAL_CH_Y = cl::Buffer(context, CL_MEM_WRITE_ONLY, global_size * sizeof(float));
    
     queue.enqueueWriteBuffer(buffer_POINTS_X, CL_TRUE, 0, size * sizeof(float), points_x);
+    
     queue.enqueueWriteBuffer(buffer_POINTS_Y, CL_TRUE, 0, size * sizeof(float), points_y);
     queue.enqueueWriteBuffer(buffer_SIZE, CL_TRUE, 0, sizeof(int), &size);
     queue.enqueueWriteBuffer(buffer_D_SIZE, CL_TRUE, 0, sizeof(int), &d_size);
@@ -229,9 +370,13 @@ void MergeHull::jm_gpua(float* points_x, float* points_y, int size, int d_size, 
         kernel,
         cl::NullRange,
         cl::NDRange(ndrange_size),
-        cl::NDRange(1),
+        cl::NDRange(ndrange_group_size),
         NULL,
         &event);
+
+   /* event.wait();
+    std::cout << "exec time gpu : " << (event.getProfilingInfo<CL_PROFILING_COMMAND_END>() -
+        event.getProfilingInfo<CL_PROFILING_COMMAND_START>()) / 1000000 << " ms" << '\n';*/
 
     queue.enqueueReadBuffer(buffer_GLOBAL_CH_X, CL_TRUE, 0, global_size * sizeof(float), global_ch_x);
     queue.enqueueReadBuffer(buffer_GLOBAL_CH_Y, CL_TRUE, 0, global_size * sizeof(float), global_ch_y);
@@ -312,6 +457,7 @@ std::vector<Point> MergeHull::bottom_up(float* points_x, float* points_y, int si
                 if (smaller) global_ch[(i * v_size) - 1].x = d_size;
             }
         }
+
     return result;
 }
 
@@ -411,6 +557,7 @@ std::vector<Point> MergeHull::bottom_up_with_step(float* points_x, float* points
                 if (smaller) global_ch[(i * v_size) - 1].x = d_size;
             }
         }
+
     return result;
 }
 
@@ -481,10 +628,97 @@ std::vector<Point> MergeHull::bottom_up_gpua(float* points_x, float* points_y, i
                 if (smaller) global_ch_x[(i * v_size) - 1] = d_size;
             }
         }
+
+    delete[] global_ch_x;
+    delete[] global_ch_y;
+
     return result;
 }
 
+std::vector<Point> MergeHull::bottom_up_gpua_gm(float* points_x, float* points_y, int size, int _d_size)
+{
+    float d_size = _d_size;
+    if (size <= d_size)
+    {
+        return jm(points_x, points_y, size);
+    }
+    const int v_size = d_size + 2;
 
+    int global_size = ceil(size / d_size) * 2 + (ceil(size / d_size) * d_size);
+
+    float* global_ch_x = new float[global_size];
+    float* global_ch_y = new float[global_size];
+
+    std::vector<Point> result;
+    std::vector<Point> final_result;
+    std::vector<Point> left_hull;
+    std::vector<Point> right_hull;
+
+    std::vector<std::thread> threads;
+
+    for (int t = 0; t < nb_cpu_threads; t++)
+    {
+        threads.push_back(std::thread());
+    }
+
+    jm_gpua(points_x, points_y, size, (int)d_size, global_ch_x, global_ch_y, global_size);
+
+    std::chrono::steady_clock::time_point begin;
+    std::chrono::steady_clock::time_point end;
+    for (int sz = d_size; sz < size; sz = sz + sz)
+    {
+        for (int lo = 0; lo < size - sz; lo += sz + sz)
+        {
+            left_hull.clear();
+            right_hull.clear();
+            int mid = (lo + sz - 1);
+            int hi = std::min(lo + sz + sz - 1, size - 1);
+            int global_lo = (ceil(lo / d_size) * 2) + lo;
+            int global_mid = mid + (ceil((mid + 1) / d_size) * 2);
+            int global_hi = (ceil((hi + d_size - (hi - mid) + 1) / d_size) * 2) + hi + d_size - (hi - mid) - 2;
+
+            for (int i = ceil(lo / d_size) + 1; i < ceil(mid / d_size) + 1; i++)
+            {
+                for (int j = 0; j < global_ch_x[(i * v_size) - 1]; j++)
+                    left_hull.push_back(Point(global_ch_x[j + ((i - 1) * v_size)], global_ch_y[j + ((i - 1) * v_size)]));
+            }
+
+            for (int i = ceil(mid / d_size) + 1; i < ceil((hi + 1) / d_size) + 1; i++)
+            {
+                for (int j = 0; j < global_ch_x[(i * v_size) - 1]; j++)
+                    right_hull.push_back(Point(global_ch_x[j + ((i - 1) * v_size)], global_ch_y[j + ((i - 1) * v_size)]));
+            }
+
+            result = graham_merger(left_hull, right_hull);
+
+            int r = 0;
+            int smaller;
+            for (int i = ceil(lo / d_size) + 1; i < ceil((hi + 1) / d_size) + 1; i++)
+            {
+                smaller = true;
+                for (int j = 0; j < d_size; j++)
+                {
+                    if (r > result.size() - 1)
+                    {
+                        global_ch_x[(i * v_size) - 1] = j;
+                        smaller = false;
+                        break;
+                    }
+                    global_ch_x[j + ((i - 1) * v_size)] = result[r].x;
+                    global_ch_y[j + ((i - 1) * v_size)] = result[r].y;
+                    r++;
+                }
+
+                if (smaller) global_ch_x[(i * v_size) - 1] = d_size;
+            }
+        }       
+    }
+    
+    delete[] global_ch_x;
+    delete[] global_ch_y;
+ 
+    return result;
+}
 
 cl::Program MergeHull::make_program_from_file(std::shared_ptr<std::ifstream> sourceFile, cl::Context& context)
 {
@@ -515,8 +749,10 @@ void MergeHull::print_devices(std::vector<cl::Device>& devices)
 }
 
 
-void MergeHull::init()
+void MergeHull::init(int _nb_cpu_threads)
 {
+    this->nb_cpu_threads = _nb_cpu_threads;
+
     cl::Platform::get(&platforms);
     if (platforms.size() == 0) {
         std::cout << "Platform size 0\n";
@@ -539,8 +775,9 @@ void MergeHull::init()
 
     kernel = cl::Kernel(program, "jm_gpu", &err);
 
-    queue = cl::CommandQueue(context, devices[0], 0, &err);
+    queue = cl::CommandQueue(context, devices[0], NULL, &err); //CL_QUEUE_PROFILING_ENABLE
 
     max_compute_units = devices[0].getInfo<CL_DEVICE_MAX_COMPUTE_UNITS >();
     max_work_group_size = devices[0].getInfo<CL_DEVICE_MAX_WORK_GROUP_SIZE>();
+
 }

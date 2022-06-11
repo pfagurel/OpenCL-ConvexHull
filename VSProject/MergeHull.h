@@ -35,6 +35,8 @@ class MergeHull
 	int ndrange_size;
 	int ndrange_group_size;
 
+	int nb_cpu_threads;
+
 	cl::Program make_program_from_file(std::shared_ptr<std::ifstream> sourceFile, cl::Context& context);
 
 
@@ -47,6 +49,10 @@ class MergeHull
 
     std::vector<Point> merger(std::vector<Point >& a, std::vector<Point>& b);
 
+	void inline push_next_inc(std::vector<Point>& vec, std::vector<Point>& ch1, std::vector<Point>& ch2, int& i1_l, int& i1_u, int& i2_l, int& i2_u);
+
+	std::vector<Point> graham_merger(std::vector<Point >& a, std::vector<Point>& b);
+
     std::vector<Point> jm(float* points_x, float* points_y, int size);
 
     void jm(float* points_x, float* points_y, int lo, int hi, int g_lo, int g_hi, std::vector<Point>& global_ch);
@@ -54,14 +60,11 @@ class MergeHull
 	void jm_gpua(float* points_x, float* points_y,int size, int d_size,  float* global_ch_x, float* global_ch_y, int global_size );
 
 public:
-	void init();
-
+	void init(int _nb_cpu_threads = 8);
     std::vector<Point> divide(float* points_x, float* points_y, int size);
-
     std::vector<Point> bottom_up(float* points_x, float* points_y, int size, int d_size);
-
 	std::vector<Point> bottom_up_with_step(float* points_x, float* points_y, int size, godot::Node* node);
-
 	std::vector<Point> bottom_up_gpua(float* points_x, float* points_y, int size, int d_size);
+	std::vector<Point> bottom_up_gpua_gm(float* points_x, float* points_y, int size, int _d_size);
 };
 
