@@ -1,6 +1,10 @@
 # OpenCL-ConvexHull
 
-This repository contains the implementation of MergeHullCPU and MergeHullGPUA algorithms, aswell as the port of https://timiskhakov.github.io/posts/computing-the-convex-hull-on-gpu QuickHull algorithm to OpenCL.  
+This repository contains the implementation of MergeHullCPU and MergeHullGPUA algorithms, aswell as the port of https://timiskhakov.github.io/posts/computing-the-convex-hull-on-gpu QuickHull algorithm to OpenCL.
+
+# Graham Merge update
+Graham Merge is an alternative to the initial merge algorithm. It allows to remove the hypothesis that the points are initially sorted. 
+For it to work, a small tweak has to be done to the JM algorithm in order to initially find the leftmost point.
 
 # Structure
 
